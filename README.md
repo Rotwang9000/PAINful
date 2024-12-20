@@ -36,6 +36,34 @@ Shows how declarations relate to each other using these operators:
 ### Transformation Operations (->)
 The transformation/pipe operator `->` allows chaining operations where output from one declaration feeds into another.
 
+### Nested Object Notation
+PAIN supports nested objects using dot notation:
+
+§1 user
+§2 name
+§3 John
+§4 address
+§5 street
+§6 123 Main St
+§7 City
+§8 Johnton
+§
+§1.§2 = §3
+§1.§4.§5 = §6
+..§7 = §8
+
+This creates nested JSON structure:
+```json
+{
+    "user": {
+        "name": "John",
+        "address": {
+            "street": "123 Main St",
+            "City": "Johnton"
+        }
+    }
+}
+
 Examples:
 
 1. Simple Transformation:

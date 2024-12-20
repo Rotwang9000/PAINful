@@ -6,6 +6,28 @@ class PAINConverter {
 		let inRelationships = false;
 		let currentArray = null;
 		let currentArrayItems = [];
+		let lastPath = null;
+
+		// Helper to resolve relative path
+		const resolvePath = (path, lastPath) => {
+			if (path.startsWith('..')) {
+				if (!lastPath) throw new Error('No previous path for relative notation');
+				const parentParts = lastPath.split('.');
+				return [...parentParts.slice(0, -1), path.slice(2)].join('.');
+			}
+			return path;
+		};
+
+		// Helper to set nested value
+		const setNestedValue = (obj, path, value) => {
+			const parts = path.split('.');
+			let current = obj;
+			for (let i = 0; i < parts.length - 1; i++) {
+				current[parts[i]] = current[parts[i]] || {};
+				current = current[parts[i]];
+			}
+			current[parts[parts.length - 1]] = value;
+		};
 
 		// Parse content
 		for (const line of lines) {
@@ -28,13 +50,25 @@ class PAINConverter {
 				if (trimmed.includes("=")) {
 					// Handle assignment
 					const [src, dest] = trimmed.split("=").map((x) => x.trim());
-					const srcId = src.replace("§", "");
+					
+					// Handle relative path
+					const resolvedSrc = resolvePath(src, lastPath);
+					lastPath = resolvedSrc;
+
+					// Parse source path
+					const srcParts = resolvedSrc.split('.');
+					const srcRefs = srcParts.map(part => {
+						if (part.startsWith('§')) {
+							return declarations[part.slice(1)];
+						}
+						return part;
+					});
+
+					// Get destination value
 					const destId = dest.replace("§", "");
-					relationships.push([
-						"assign",
-						declarations[srcId],
-						declarations[destId],
-					]);
+					const destValue = declarations[destId];
+
+					relationships.push(["assign", srcRefs.join('.'), destValue]);
 				} else if (trimmed.includes(":")) {
 					// Start new array
 					if (currentArray) {
@@ -66,8 +100,8 @@ class PAINConverter {
 		const result = {};
 		for (const [type, ...data] of relationships) {
 			if (type === "assign") {
-				const [key, value] = data;
-				result[key] = value;
+				const [path, value] = data;
+				setNestedValue(result, path, value);
 			} else if (type === "array") {
 				const [name, items] = data;
 				result[name] = items;
