@@ -4,6 +4,8 @@
 
 The PAIN Converter is a Python project designed to load, save, and convert a custom notation format called PAIN to JSON. This tool is useful for users who need to work with PAIN formatted data and want to easily convert it into a more widely used format like JSON.
 
+Live conversion: https://rotwang9000.github.io/PAINful/
+
 ## Features
 
 - Load PAIN formatted files
@@ -18,6 +20,7 @@ PAIN (Procedural API Interaction Notation) is a simple text-based format for des
 A PAIN document consists of two sections:
 1. Declaration Section
 2. Relationship Section
+separated by a § with nothing else on the line
 
 ### Declaration Section
 Each line declares a variable or result using the § symbol followed by a number:
@@ -100,7 +103,7 @@ Rules for ->:
 1. Declaration numbers must be unique
 2. They can contain references to other declarations which can be higher numbers
 3. Each relationship must reference existing declarations
-4. Indentation in relationship section is optional but recommended for readability
+4. Indentation in relationship section is optional but recommended for readability - leading tabs and spaces are ignored.
 5. Following a declaraion number is either a space or a new line character which are ignored. A space followed by a new line will give a new line at the start. Data can be spread over multiple lines and stops when it gets to the next line beginning §
 5. if we need to use the § symbol then it can be escaped with a \
 6. Declaration and relationship sections are separated by a line with a single §
@@ -120,17 +123,6 @@ The above PAIN notation would convert to JSON like:
 }
 
 
-### Installation
-
-```bash
-pip install pain-converter
-```
-
-To install the required dependencies, run:
-
-```
-pip install -r requirements.txt
-```
 
 ## Usage
 
