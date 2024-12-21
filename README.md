@@ -39,30 +39,56 @@ The transformation/pipe operator `->` allows chaining operations where output fr
 ### Nested Object Notation
 PAIN supports nested objects using dot notation:
 
-§1 user
-§2 name
-§3 John
-§4 address
-§5 street
-§6 123 Main St
-§7 City
-§8 Johnton
-§
-§1.§2 = §3
-§1.§4.§5 = §6
-..§7 = §8
-
-This creates nested JSON structure:
-```json
 {
-    "user": {
+    "users": [{
         "name": "John",
+	"name": "Jones",
         "address": {
             "street": "123 Main St",
             "City": "Johnton"
+        },
+	"phone": "000"
+	},
+	{
+        "name": "Mary",
+        "address": {
+            "street": "321 Roady Road",
+            "City": "Little Johnton"
         }
-    }
 }
+
+	]
+    }
+
+
+
+§1 users 
+§2 name 
+§4 address 
+§5 street 
+§7 City 
+§9 phone 
+§3 Jones 
+§6 123 Main St 
+§8 Johnton 
+§10 000 
+§11 Mary 
+§12 321 Roady Road 
+§13 Little Johnton 
+§14 John
+§
+§1..§2 = §14
+. = §3
+..§4.§5 = §6 
+..§7 = §8 
+...§9 = §10 
+...§2 = §11 
+..§4.§5 = §12 
+..§7 = §13
+
+The dots are relative to the one above, objects are closed as we leave them on the way up
+\6 means 6 dots up
+/6 means 6 dots from the left hand side, but still a relative style movement so only closes objects left on the left.
 
 Examples:
 
